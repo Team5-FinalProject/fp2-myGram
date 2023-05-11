@@ -3,7 +3,7 @@ const SocialMediaController = require("../controllers/socialmediaController");
 
 router.post("/", SocialMediaController.createSocialmedia);
 router.get("/", SocialMediaController.getAllSocialmedias);
-router.put("/", SocialMediaController.updateSocialmediaById);
+router.put("/:id", SocialMediaController.updateSocialmediaById);
 router.delete("/:id", SocialMediaController.deleteSocialmediaById);
 
 module.exports = router;

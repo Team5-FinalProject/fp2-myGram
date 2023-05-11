@@ -1,13 +1,81 @@
 const { Socialmedia } = require("../models");
 
 class SocialmediaController {
-  static async createSocialmedia(req, res) {}
+  static async createSocialmedia(req, res) {
+    try {
+      const UserId = res.locals.user.id;
+      const { name, social_media_url } = req.body;
+      let data = {
+        UserId,
+        name,
+        social_media_url,
+      };
 
-  static async getAllSocialmedias(req, res) {}
+      const newSocmed = await Socialmedia.create(data, { returning: true });
+      if (newSocmed) {
+        res.status(201).json({ socialmedia: newSocmed });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(401).json(err);
+    }
+  }
 
-  static async updateSocialmediaById(req, res) {}
+  static async getAllSocialmedias(req, res) {
+    try {
+      const socmed = await Socialmedia.findAll();
+      if (socmed) {
+        return res.status(200).json({ social_medias: socmed });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(401).json(err);
+    }
+  }
 
-  static async deleteSocialmediaById(req, res) {}
+  static async updateSocialmediaById(req, res) {
+    try {
+      const socmedId = req.params.id;
+      const { name, social_media_url } = req.body;
+      const updatedUser = await Socialmedia.update(
+        { name, social_media_url },
+        { where: { id: socmedId }, returning: true }
+      );
+
+      if (updatedUser[0] == 1) {
+        console.log(updatedUser);
+        return res.status(200).json({
+          social_medias: updatedUser[1],
+        });
+      } else {
+        return res.status(400).json({ message: "Data not found" });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(401).json(err);
+    }
+  }
+
+  static async deleteSocialmediaById(req, res) {
+    try {
+      const socmedId = req.params.id;
+      const deletedSocmed = await Socialmedia.destroy({
+        where: { id: socmedId },
+      });
+
+      if (deletedSocmed) {
+        return res.status(200).json({
+          message: "Your social media has been successfuly deleted",
+        });
+      } else {
+        console.log(err);
+        return res.status(401).json(err);
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(401).json(err);
+    }
+  }
 }
 
 module.exports = SocialmediaController;
