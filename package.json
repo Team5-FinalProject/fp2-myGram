@@ -1,7 +1,6 @@
 {
   "name": "fp2-my-gram",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -20,5 +19,6 @@
   },
   "devDependencies": {
     "sequelize-cli": "^6.6.0"
-  }
+  },
+  "description": ""
 }

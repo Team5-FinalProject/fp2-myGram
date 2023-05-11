@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Photo, { foreignKey: "UserId", as: "photos" });
-      this.hasMany(models.Comment, { foreignKey: "UserId", as: "comments" });
-      this.hasMany(models.Socialmedia, { foreignKey: "UserId", as: "social medias" });
+      this.hasMany(models.Photo);
+      this.hasMany(models.Comment);
+      this.hasMany(models.Socialmedia);
     }
   }
   User.init(
@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       phone_number: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false,
         validate: {
           notEmpty: {

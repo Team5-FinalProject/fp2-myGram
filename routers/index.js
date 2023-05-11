@@ -3,8 +3,11 @@ const userRouters = require("./userRouters");
 const photoRouters = require("./photoRouters");
 const commentRouters = require("./commentRouters");
 const socialmediaRouters = require("./socialmediaRouters");
+const authentication = require("../middlewares/authentication");
 
 router.use("/users", userRouters);
+
+router.use(authentication);
 
 router.use("/photos", photoRouters);
 
