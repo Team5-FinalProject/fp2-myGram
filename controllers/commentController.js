@@ -59,21 +59,23 @@ class CommentController {
     try {
       const commentId = req.params.id;
       const { comment } = req.body;
+      const authenticatedUser = res.locals.user;
 
-      const updatedComment = await Comment.findByPk(commentId);
+      const updatedComment = await Comment.findOne({
+        where: { id: commentId, UserId: authenticatedUser.id },
+      });
 
       if (!updatedComment) {
         return res.status(404).json({
-          name: "Not Found",
-          devMessage: `Comment with id ${commentId} not found`,
+          devMessage: `Comment with id ${commentId} not found or user is not authorized`,
         });
       }
-
-      const photoId = updatedComment.PhotoId;
 
       updatedComment.comment = comment;
 
       await updatedComment.save();
+
+      const photoId = updatedComment.PhotoId;
 
       res.status(200).json({
         comment: {
@@ -94,19 +96,25 @@ class CommentController {
   static async deleteCommentById(req, res) {
     try {
       const commentId = req.params.id;
-      const deletedComment = await Comment.destroy({
+      const authenticatedUser = res.locals.user;
+
+      const deletedComment = await Comment.findOne({
+        where: { id: commentId, UserId: authenticatedUser.id },
+      });
+
+      if (!deletedComment) {
+        return res.status(404).json({
+          devMessage: `Comment with id ${commentId} not found or user is not authorized`,
+        });
+      }
+
+      await Comment.destroy({
         where: { id: commentId },
       });
 
-      if (deletedComment) {
-        return res.status(200).json({
-          message: "Your comment has been successfully deleted",
-        });
-      } else {
-        return res.status(404).json({
-          message: `Comment with id ${commentId} not found`,
-        });
-      }
+      return res.status(200).json({
+        message: "Your comment has been successfully deleted",
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
