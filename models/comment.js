@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User, { foreignKey: "UserId", as: "user" });
-      this.belongsTo(models.Photo, { foreignKey: "PhotoId", as: "photos" });
+      this.belongsTo(models.User);
+      this.belongsTo(models.Photo);
     }
   }
   Comment.init(
@@ -21,7 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {
-          msg: "Comment cannot be empty",
+          notEmpty: {
+            msg: "Comment cannot be empty",
+          },
         },
       },
     },
