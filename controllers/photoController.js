@@ -1,4 +1,5 @@
-const { Photo, User } = require("../models");
+const { Photo, User, Comment } = require("../models");
+const comment = require("../models/comment");
 
 class PhotoController {
   static async getAllPhotos(req, res) {
@@ -6,15 +7,31 @@ class PhotoController {
       where: {
         UserId: res.locals.user.id
       },
-      include: User
+      include: [
+        {
+          model: Comment,
+          attributes: ['comment'],
+          include: [
+            {
+              model: User,
+              attributes: ['username']
+            }
+          ]
+        },
+        {
+          model: User,
+          attributes: ['id','username', 'profile_image_url']
+        }
+      ]
     })
-      .then((data) => {
-        res.status(200).json({
-          "Photos":
-          {
-            data
-          }
-        });
+      .then((photos) => {
+        if (photos.length === 0) {
+          res.status(200).json({
+            "message": "You have no photos"
+          });
+        } else {
+          res.status(200).json({photos});
+        }
       })
       .catch((err) => {
         res.status(500).json(err);

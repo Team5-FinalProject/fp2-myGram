@@ -5,6 +5,16 @@ const { generateToken } = require("../helpers/jwt");
 class UserController {
   static async register(req, res) {
     const { email, full_name, username, password, profile_image_url, age, phone_number } = req.body;
+    const validateEmail = await User.findOne({
+      where: {
+        email
+      }
+    });
+    if (validateEmail) {
+      return res.status(400).json({
+        message: "Email already exists"
+      });
+    }
     User.create({
       email,
       full_name,
@@ -70,6 +80,26 @@ class UserController {
   static async updateUserById(req, res) {
     let id = +req.params.id;
     const { email, full_name, username, password, profile_image_url, age, phone_number } = req.body;
+    const validateUser = await User.findOne({
+      where: {
+        id
+      }
+    });
+    const validateEmail = await User.findOne({
+      where: {
+        email
+      }
+    });
+    if (!validateUser) {
+      return res.status(400).json({
+        message: "User not found"
+      });
+    }
+    if (validateEmail) {
+      return res.status(400).json({
+        message: "Email already exists"
+      });
+    }
     let data = {
       email,
       full_name,
@@ -104,6 +134,16 @@ class UserController {
 
   static async deleteUserById(req, res) {
     let id = +req.params.id;
+    const validateUser = await User.findOne({
+      where: {
+        id
+      }
+    });
+    if (!validateUser) {
+      return res.status(400).json({
+        message: "User not found"
+      });
+    }
     User.destroy({
       where: {
         id
