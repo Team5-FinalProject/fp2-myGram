@@ -88,7 +88,7 @@ class UserController {
     const validateEmail = await User.findOne({
       where: {
         email
-      }
+      }             
     });
     if (!validateUser) {
       return res.status(400).json({
